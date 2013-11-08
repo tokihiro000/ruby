@@ -1,38 +1,83 @@
 # -*- coding: utf-8 -*-
+=begin
+
+文字列の暗号化と復号を行うメソッド。ふい文字かわいすぎてやゔぁい！
+
+=end
+
 require 'openssl'
-require 'bin_dump.rb'
+require './create_key'
 
-def encrypt(s, key, iv)
-  enc = OpenSSL::Cipher::Cipher.new("aes-128-cbc") #128bitのAES暗号をCBCモードで使うインスタンス生成
-  enc.encrypt                                      #暗号化モード
-  enc.key = key
-  enc.iv = iv  
-  return enc.update(s) + enc.final                 #暗号化
+def bin_dump(str, num)
+  num.times do |i|
+    str[i].bytes { |b| print b.to_s(16) }
+  end
+  puts ""
 end
 
-def decrypt(s, key, iv)
-  dec = OpenSSL::Cipher::Cipher.new("aes-128-cbc") #128bitのAES暗号をCBCモードで使うインスタンス生成
-  dec.decrypt                                      #復号モード
-  dec.key = key
-  dec.iv = iv
-  return dec.update(s) + dec.final                 #復号
+class Crypto
+
+  def initialize(key = nil, iv = nil, alg = "aes-128-cbc")
+    @cip = OpenSSL::Cipher.new(alg)
+    @key = key
+    @iv = iv
+  end
+
+  def encrypt(s)
+    if @key != nil && @iv != nil
+      @cip.encrypt #暗号化モード
+      @cip.key = @key #鍵セット
+      @cip.iv = @iv #イニシャライズベクタセット
+      @cip.padding = 1 #パディング有効
+      enc_data = ""
+      enc_data << @cip.update(s)
+      enc_data << @cip.final
+      return enc_data
+    else
+      return nil
+    end
+  end
+
+  def decrypt(s)
+    if @key != nil && @iv != nil
+      @cip.decrypt #復号モード
+      @cip.key = @key #鍵セット
+      @cip.iv = @iv #イニシャライズベクタセット
+      @cip.padding = 1 #パディング有効
+      dec_data = ""
+      dec_data << @cip.update(s)
+      dec_data << @cip.final
+      return dec_data
+    else
+      return nil
+    end
+  end
+
 end
- 
-if __FILE__ == $0                                  #このプログラムが単体で実行される場合のみ以下を実行
+
+
+#このプログラムが単体で実行される場合のみ以下を実行
+if __FILE__ == $0
   plaintext = ARGV[0]
-  io = File.open('k1.txt', 'rb')
-  io2 = File.open('iv.txt', 'rb')  
-  key = io.gets
-  iv = io2.gets
-  print "[key] : "
-  bin_dump(key, 16)
-  print "[iv] : "
-  bin_dump(iv, 16)
-  
-  ciphertext = encrypt plaintext, key, iv                     #__FILE__ と $0は他のプログラムにrequireされると一致しない。
-  print "[ciphertext] : "
-  bin_dump(ciphertext, 16)
-  b = decrypt ciphertext, key, iv
-  p b
-end
+  # key = File.binread("k1.txt")
+  # print "[key] : "
+  # bin_dump(key, 16)
 
+  # iv = File.binread("iv.txt")
+  # print "[iv] : "
+  # bin_dump(iv, 16)
+
+  ck = Create_key.new("aes-128-cbc")
+  key = ck.key_gen
+  iv = ck.iv_gen
+  c = Crypto.new(key, iv, "aes-128-cbc")
+  ciphertext = c.encrypt(plaintext)
+  if ciphertext != nil
+    print "[ciphertext] : "
+    bin_dump(ciphertext, 16)
+    b = c.decrypt(ciphertext)
+    p b
+  else
+    print "error\n"
+  end
+end
