@@ -11,23 +11,29 @@ end
 class Create_key
 
   def initialize(alg)
+    OpenSSL::Random.load_random_file("/dev/random")
     @cip = OpenSSL::Cipher.new(alg)
-    OpenSSL::Random.load_random_file("/dev/random")
-  end
-
-  #乱数シード変更
-  def ch_seed
-    OpenSSL::Random.load_random_file("/dev/random")
   end
 
   #イニシャライズベクタ生成
   def iv_gen
-    return @cip.random_iv
+    if OpenSSL::Random.status?
+      return @cip.random_iv
+    else
+      puts "エントロピー不足"
+      return nil
+    end
+
   end
 
   #鍵生成
   def key_gen
-    return @cip.random_key
+    if OpenSSL::Random.status?
+      return @cip.random_key
+    else
+      puts "エントロピー不足"
+      return nil
+    end
   end
 
   #鍵長を返す
@@ -36,10 +42,13 @@ class Create_key
   end
 end
 
+#このプログラムが単体で実行される場合のみ以下を実行
 if __FILE__ == $0
   ck = Create_key.new("aes-256-cbc")
   key = ck.key_gen
   len = ck.key_len
   print "len = ", len, "\n"
-  bin_dump(key, len)
+  if key != nil
+    bin_dump(key, len)
+  end
 end
