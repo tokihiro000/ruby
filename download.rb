@@ -2,9 +2,8 @@ require 'net/http'
 require 'uri'
 Net::HTTP.version_1_2
 
-#uri  = URI("http://localhost/php/research/download.php")
-uri  = URI("http://localhost/php/file_dir")
-dest = "/Users/tokihiro/ruby/file/foo"
+uri  = URI("http://localhost/php/file_dir/neko.png")
+dest = "/Users/tokihiro/ruby/file/foo.png"
 
 Net::HTTP.start(uri.host, uri.port) do |http|
 	req = Net::HTTP::Get.new(uri.request_uri)
