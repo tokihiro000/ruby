@@ -59,17 +59,11 @@ end
 #このプログラムが単体で実行される場合のみ以下を実行
 if __FILE__ == $0
   plaintext = ARGV[0]
-  # key = File.binread("k1.txt")
-  # print "[key] : "
-  # bin_dump(key, 16)
-
-  # iv = File.binread("iv.txt")
-  # print "[iv] : "
-  # bin_dump(iv, 16)
 
   ck = Create_key.new("aes-128-cbc")
   key = ck.key_gen
   iv = ck.iv_gen
+
   c = Crypto.new(key, iv, "aes-128-cbc")
   ciphertext = c.encrypt(plaintext)
   if ciphertext != nil

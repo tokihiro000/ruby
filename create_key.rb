@@ -11,8 +11,8 @@ end
 class Create_key
 
   def initialize(alg)
-    OpenSSL::Random.load_random_file("/dev/random")
     @cip = OpenSSL::Cipher.new(alg)
+    OpenSSL::Random.load_random_file("/dev/random")
   end
 
   #イニシャライズベクタ生成

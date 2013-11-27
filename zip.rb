@@ -2,10 +2,12 @@
 require 'rubygems'
 require 'zip'
 
-folder = "/Users/tokihiro"
+#zipを作るフォルダ(.なのでカレントディレクトリ)
+folder = "."
+#
 input_filenames = ['image.jpg', 'test.txt']
 
-zipfile_name = "/Users/tokihiro/zip_folder/archive.zip"
+zipfile_name = "./zip_dir/archive.zip"
 
 Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
   input_filenames.each do |filename|
