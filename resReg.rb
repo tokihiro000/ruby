@@ -13,14 +13,14 @@ Net::HTTP.start(uri.host, uri.port){|http|
   #送信
   response = http.post(uri.path, body, header)
   p response
-#  p response.body
-  re = /<img.*?>/
+  #  p response.body
 
+  #
+  # imgタグとaタグのみをレスポンスデータから抽出する
+  #
+  reImg = /<img.*?>/
   str = response.body
-  if str =~ re
-    print $&, "\n"
-  end
-  nstr = str.gsub(re) do |matched|
+  nstr = str.gsub(reImg) do |matched|
     puts matched
   end
 
