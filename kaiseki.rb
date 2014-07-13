@@ -3,8 +3,8 @@
 require 'MeCab'
 sentence = "すもももももももものうち"
  
-mecab = MeCab::Tagger.new
-node = mecab.parseToNode(sentence)
+mecab      = MeCab::Tagger.new
+node       = mecab.parseToNode(sentence)
 word_array = []
  
 begin

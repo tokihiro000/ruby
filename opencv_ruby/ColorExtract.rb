@@ -27,8 +27,6 @@ im_w.times do |x|
     end
   end
 end
-image[100, 100][0]=0.0
-image[100, 100][1]=0.0
 
 window = GUI::Window.new('Image')
 window.show(image)
