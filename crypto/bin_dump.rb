@@ -1,8 +1,6 @@
-
-def bin_dump(str, num)  
-  num.times do |i|
-    print format("%x", str[i])
-  end
+# -*- coding: utf-8 -*-
+def bin_dump(str)
+  str.each_byte{|n| print format("%x", n) }
   puts ""
 end
 
