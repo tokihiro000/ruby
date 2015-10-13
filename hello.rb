@@ -1,4 +1,4 @@
-
+#1hogehoge
 def a
   print "megane"
 end
